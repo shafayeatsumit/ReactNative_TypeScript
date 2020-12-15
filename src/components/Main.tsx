@@ -7,13 +7,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Todo, fetchTodos } from '../actions';
+import { Todo, fetchTodos, deleteTodo } from '../actions';
 import { AppState } from '../reducers';
 
 interface MainProps {
   todos: Todo[];
   // some function with no return value
-  fetchTodos(): any;
+  fetchTodos(): typeof fetchTodos;
+  deleteTodo: typeof deleteTodo;
 }
 
 interface Item {
@@ -23,13 +24,17 @@ interface Item {
 }
 
 class _Main extends Component<MainProps> {
-  handleXout = (): void => { };
+  handleXout = (id: number): void => {
+    this.props.deleteTodo(id);
+  };
 
   renderItem = ({ item }: { item: Todo }) => {
     return (
       <View style={styles.item}>
         <Text style={styles.todoText}>{item.title}</Text>
-        <TouchableOpacity onPress={this.handleXout} style={styles.xout}>
+        <TouchableOpacity
+          onPress={() => this.handleXout(item.id)}
+          style={styles.xout}>
           <Text style={styles.xoutText}>X</Text>
         </TouchableOpacity>
       </View>
@@ -73,7 +78,7 @@ const mapStateToProps = (state: AppState): { todos: Todo[] } => {
   };
 };
 
-export const Main = connect(mapStateToProps, { fetchTodos })(_Main);
+export const Main = connect(mapStateToProps, { fetchTodos, deleteTodo })(_Main);
 
 const styles = StyleSheet.create({
   container: {

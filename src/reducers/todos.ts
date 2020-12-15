@@ -1,11 +1,12 @@
 import { act } from 'react-test-renderer';
-import { Todo, FetchTodosAction } from '../actions';
-import { ActionTypes } from '../actions/types';
+import { Todo, TodosAction, ActionTypes } from '../actions';
 
-export const todosReducer = (state: Todo[] = [], action: FetchTodosAction) => {
+export const todosReducer = (state: Todo[] = [], action: TodosAction) => {
   switch (action.type) {
     case ActionTypes.fetchTodos:
       return action.payload;
+    case ActionTypes.deleteTodo:
+      return state.filter((todo: Todo) => todo.id !== action.payload);
     default:
       return state;
   }
