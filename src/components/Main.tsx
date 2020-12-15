@@ -5,6 +5,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { Todo, fetchTodos, deleteTodo } from '../actions';
@@ -23,7 +24,17 @@ interface Item {
   completed: boolean;
 }
 
-class _Main extends Component<MainProps> {
+interface MainState {
+  fetching: boolean;
+}
+
+class _Main extends Component<MainProps, MainState> {
+  constructor(props: MainProps) {
+    super(props);
+    this.state = {
+      fetching: false,
+    };
+  }
   handleXout = (id: number): void => {
     this.props.deleteTodo(id);
   };
@@ -54,7 +65,14 @@ class _Main extends Component<MainProps> {
 
   fetchTodos = (): void => {
     this.props.fetchTodos();
+    this.setState({ fetching: true });
   };
+
+  componentDidUpdate(prevProps: MainProps): void {
+    if (!prevProps.todos.length && this.props.todos.length) {
+      this.setState({ fetching: false });
+    }
+  }
 
   render() {
     return (
@@ -62,7 +80,11 @@ class _Main extends Component<MainProps> {
         <TouchableOpacity style={styles.fetchButton} onPress={this.fetchTodos}>
           <Text style={styles.buttonTitle}>Fetch</Text>
         </TouchableOpacity>
-        {this.renderList()}
+        {this.state.fetching ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+            <>{this.renderList()}</>
+          )}
       </View>
     );
   }
