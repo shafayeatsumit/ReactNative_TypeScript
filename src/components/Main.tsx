@@ -13,7 +13,7 @@ import { AppState } from '../reducers';
 interface MainProps {
   todos: Todo[];
   // some function with no return value
-  fetchTodos(): typeof fetchTodos;
+  fetchTodos: Function;
   deleteTodo: typeof deleteTodo;
 }
 
