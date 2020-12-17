@@ -9,17 +9,18 @@
  */
 
 import React from 'react';
-import { createStore, applyMiddleware } from 'redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
 import { Main } from './src/components/Main';
-import { reducers } from './src/reducers';
-const store = createStore(reducers, applyMiddleware(thunk));
+import PersistStore from './src/store';
+const { store, persistor } = PersistStore();
 
 const App = () => {
   return (
     <Provider store={store}>
-      <Main />
+      <PersistGate loading={null} persistor={persistor}>
+        <Main />
+      </PersistGate>
     </Provider>
   );
 };
